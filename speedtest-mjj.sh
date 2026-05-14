@@ -1,6 +1,6 @@
 #!/bin/bash
 # ==========================================
-# Speedtest 热门测速节点雷达 (MJJ 专供版)
+# Speedtest 热门测速节点雷达 (MJJ 纯净极速版)
 # Author: starshine369
 # GitHub: https://github.com/starshine369/speedtest-mjj
 # ==========================================
@@ -14,7 +14,7 @@ RESET="\033[0m"
 
 # 1. 自动检测并安装 Ookla Speedtest 官方版
 install_speedtest() {
-    echo -e "${YELLOW}📡 未检测到官方 Speedtest CLI，正在自动为 MJJ 部署纯净版...${RESET}"
+    echo -e "${YELLOW}[*] 未检测到官方 Speedtest CLI，正在自动为 MJJ 部署纯净版...${RESET}"
     
     # 检测架构
     ARCH=$(uname -m)
@@ -23,7 +23,7 @@ install_speedtest() {
     elif [[ "$ARCH" == "aarch64" || "$ARCH" == "arm64" ]]; then
         DL_URL="https://install.speedtest.net/app/cli/ookla-speedtest-1.2.0-linux-aarch64.tgz"
     else
-        echo -e "${RED}❌ 不支持的架构: $ARCH，请手动安装。${RESET}"
+        echo -e "${RED}[!] 不支持的架构: $ARCH，请手动安装。${RESET}"
         exit 1
     fi
 
@@ -42,7 +42,7 @@ install_speedtest() {
     # 自动同意用户协议，拔剑即战
     speedtest --accept-license --accept-gdpr >/dev/null 2>&1
     
-    echo -e "${GREEN}✅ Speedtest CLI (版本 $(speedtest --version | awk 'NR==1{print $3}')) 装备成功！${RESET}\n"
+    echo -e "${GREEN}[OK] Speedtest CLI (版本 $(speedtest --version | awk 'NR==1{print $3}')) 装备成功！${RESET}\n"
 }
 
 # 检查环境
@@ -53,22 +53,22 @@ fi
 # 2. 交互式节点雷达菜单
 while true; do
     echo -e "${CYAN}======================================${RESET}"
-    echo -e "      ${YELLOW}🌍 MJJ 专属测速节点雷达${RESET}"
+    echo -e "      ${YELLOW}[*] MJJ 专属测速节点雷达 [*]${RESET}"
     echo -e "${CYAN}======================================${RESET}"
     echo "请选择要扫描的地区 (输入数字并回车):"
     echo ""
-    echo "  1. 🇺🇸 洛杉矶 (Los Angeles)   - 美西主力"
-    echo "  2. 🇺🇸 西雅图 (Seattle)       - 跨洋前线"
-    echo "  3. 🇺🇸 圣何塞 (San Jose)      - 硅谷核心"
-    echo "  4. 🇯🇵 东京 (Tokyo)          - 亚太跳板"
-    echo "  5. 🇭🇰 香港 (Hong Kong)      - 直连枢纽"
-    echo "  6. 🇸🇬 新加坡 (Singapore)    - 东南亚出口"
-    echo "  7. 🇬🇧 伦敦 (London)         - 欧洲节点"
-    echo "  8. 🌐 自定义搜索 (手动输入城市拼音或英文)"
-    echo "  0. ❌ 退出"
+    echo "  1. [US] 洛杉矶 (Los Angeles)   - 美西主力"
+    echo "  2. [US] 西雅图 (Seattle)       - 跨洋前线"
+    echo "  3. [US] 圣何塞 (San Jose)      - 硅谷核心"
+    echo "  4. [JP] 东京 (Tokyo)          - 亚太跳板"
+    echo "  5. [HK] 香港 (Hong Kong)      - 直连枢纽"
+    echo "  6. [SG] 新加坡 (Singapore)    - 东南亚出口"
+    echo "  7. [UK] 伦敦 (London)         - 欧洲节点"
+    echo "  8. [?] 自定义搜索 (手动输入城市拼音或英文)"
+    echo "  0. [X] 退出"
     echo -e "${CYAN}======================================${RESET}"
 
-    read -p "🎯 请输入您的选择 [0-8]: " choice
+    read -p "[>] 请输入您的选择 [0-8]: " choice
 
     case $choice in
         1) CITY="Los Angeles" ;;
@@ -80,19 +80,22 @@ while true; do
         7) CITY="London" ;;
         8) 
            echo ""
-           read -p "🔍 请输入目标城市 (如 New York 或 Beijing): " custom_city
+           read -p "[>] 请输入目标城市 (如 New York 或 Beijing): " custom_city
            CITY="$custom_city"
            ;;
-        0) echo -e "${GREEN}已退出雷达系统。祝您的探针永远全绿！${RESET}"; exit 0 ;;
-        *) echo -e "${RED}无效选项，请重新输入。\033[0m"; continue ;;
+        0) echo -e "${GREEN}[OK] 已退出雷达系统。祝您的探针永远全绿！${RESET}"; exit 0 ;;
+        *) echo -e "${RED}[!] 无效选项，请重新输入。\033[0m"; continue ;;
     esac
 
-    echo -e "\n📡 正在雷达扫描 ${GREEN}$CITY${RESET} 的可用节点，请稍候...\n"
+    echo -e "\n[*] 正在雷达扫描 ${GREEN}$CITY${RESET} 的可用节点，请稍候...\n"
 
-    # API 抓取与排版核心
-    curl -s "https://www.speedtest.net/api/js/servers?search=$(echo $CITY | sed 's/ /%20/g')" | sed 's/},{/\n/g' | awk -F'"' 'BEGIN {printf "%-8s | %-35s | %s\n", "节点 ID", "赞助商 (机房 / 运营商)", "物理位置"; print "---------|-------------------------------------|-----------------"} {id=""; sp=""; nm=""; for(i=1;i<=NF;i++){if($i=="id"){id=$(i+2)}; if($i=="sponsor"){sp=$(i+2)}; if($i=="name"){nm=$(i+2)}}; if(id!="") printf "%-8s | %-35s | %s\n", id, sp, nm}'
+    # API 抓取与排版核心 (增加 Unicode 净化正则)
+    curl -s "https://www.speedtest.net/api/js/servers?search=$(echo $CITY | sed 's/ /%20/g')" | \
+    sed 's/},{/\n/g' | \
+    sed 's/\\u[0-9a-fA-F]\{4\}//g' | \
+    awk -F'"' 'BEGIN {printf "%-8s | %-35s | %s\n", "节点 ID", "赞助商 (机房 / 运营商)", "物理位置"; print "---------|-------------------------------------|-----------------"} {id=""; sp=""; nm=""; for(i=1;i<=NF;i++){if($i=="id"){id=$(i+2)}; if($i=="sponsor"){sp=$(i+2)}; if($i=="name"){nm=$(i+2)}}; if(id!="") printf "%-8s | %-35s | %s\n", id, sp, nm}'
 
-    echo -e "\n✅ 扫描完成！请复制上面的 ID，使用 ${CYAN}speedtest -s 节点ID${RESET} 榨干这台小鸡的带宽！"
+    echo -e "\n${GREEN}[OK] 扫描完成！请复制上面的 ID，使用 ${CYAN}speedtest -s 节点ID${RESET}${GREEN} 榨干这台小鸡的带宽！${RESET}"
     echo ""
     read -p "按回车键返回主菜单..."
 done
