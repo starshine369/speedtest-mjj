@@ -20,7 +20,7 @@
 无需下载脚本，直接在您的 Linux 小鸡终端里粘贴这行代码，回车即可拔剑：
 
 ```bash
-bash <(curl -sL [https://raw.githubusercontent.com/starshine369/speedtest-mjj/main/speedtest-mjj.sh)
+bash <(curl -sL https://raw.githubusercontent.com/starshine369/speedtest-mjj/main/speedtest-mjj.sh)
 ```
 
 *(如果提示 curl 不存在，请先执行 `apt install curl` 或 `yum install curl`)*
