@@ -1,6 +1,6 @@
 #!/bin/bash
 # ==========================================
-# Speedtest 热门测速节点雷达 (MJJ 纯净极速扩容版)
+# Speedtest 热门测速节点雷达 (MJJ 联动开火版)
 # Author: starshine369
 # GitHub: https://github.com/starshine369/speedtest-mjj
 # ==========================================
@@ -52,6 +52,7 @@ fi
 
 # 2. 交互式节点雷达菜单
 while true; do
+    clear
     echo -e "${CYAN}======================================${RESET}"
     echo -e "      ${YELLOW}[*] MJJ 专属全球测速雷达 [*]${RESET}"
     echo -e "${CYAN}======================================${RESET}"
@@ -100,8 +101,8 @@ while true; do
            read -p "[>] 请输入目标城市 (如 New York 或 Paris): " custom_city
            CITY="$custom_city"
            ;;
-        0) echo -e "${GREEN}[OK] 已退出雷达系统。祝您的探针永远全绿！${RESET}"; exit 0 ;;
-        *) echo -e "${RED}[!] 无效选项，请重新输入。\033[0m"; continue ;;
+        0) echo -e "\n${GREEN}[OK] 已退出雷达系统。祝您的探针永远全绿！${RESET}\n"; exit 0 ;;
+        *) echo -e "\n${RED}[!] 无效选项，请按回车键重新输入。${RESET}"; read; continue ;;
     esac
 
     echo -e "\n[*] 正在雷达扫描 ${GREEN}$CITY${RESET} 的可用节点，请稍候...\n"
@@ -112,7 +113,22 @@ while true; do
     sed 's/\\u[0-9a-fA-F]\{4\}//g' | \
     awk -F'"' 'BEGIN {printf "%-8s | %-35s | %s\n", "节点 ID", "赞助商 (机房 / 运营商)", "物理位置"; print "---------|-------------------------------------|-----------------"} {id=""; sp=""; nm=""; for(i=1;i<=NF;i++){if($i=="id"){id=$(i+2)}; if($i=="sponsor"){sp=$(i+2)}; if($i=="name"){nm=$(i+2)}}; if(id!="") printf "%-8s | %-35s | %s\n", id, sp, nm}'
 
-    echo -e "\n${GREEN}[OK] 扫描完成！请复制上面的 ID，使用 ${CYAN}speedtest -s 节点ID${RESET}${GREEN} 榨干这台小鸡的带宽！${RESET}"
+    echo -e "\n${GREEN}[OK] 扫描完成！${RESET}"
+    echo -e "${CYAN}======================================${RESET}"
+    
+    # 联动测速核心逻辑
+    read -p "[>] 请输入要测速的节点 ID (直接回车返回主菜单): " target_node
+    
+    if [[ -n "$target_node" ]]; then
+        # 正则表达式验证输入是否为纯数字
+        if [[ "$target_node" =~ ^[0-9]+$ ]]; then
+            echo -e "\n[*] [>>>] 正在连接节点 ${CYAN}${target_node}${RESET} 进行极限测速，请系好安全带...\n"
+            speedtest -s "$target_node"
+        else
+            echo -e "\n${RED}[!] 节点 ID 格式错误，只能输入纯数字！${RESET}"
+        fi
+    fi
+
     echo ""
     read -p "按回车键返回主菜单..."
 done
