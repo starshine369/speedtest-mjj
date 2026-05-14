@@ -1,6 +1,6 @@
 #!/bin/bash
 # ==========================================
-# Speedtest 热门测速节点雷达 (MJJ 纯净极速版)
+# Speedtest 热门测速节点雷达 (MJJ 纯净极速扩容版)
 # Author: starshine369
 # GitHub: https://github.com/starshine369/speedtest-mjj
 # ==========================================
@@ -53,34 +53,51 @@ fi
 # 2. 交互式节点雷达菜单
 while true; do
     echo -e "${CYAN}======================================${RESET}"
-    echo -e "      ${YELLOW}[*] MJJ 专属测速节点雷达 [*]${RESET}"
+    echo -e "      ${YELLOW}[*] MJJ 专属全球测速雷达 [*]${RESET}"
     echo -e "${CYAN}======================================${RESET}"
     echo "请选择要扫描的地区 (输入数字并回车):"
     echo ""
-    echo "  1. [US] 洛杉矶 (Los Angeles)   - 美西主力"
-    echo "  2. [US] 西雅图 (Seattle)       - 跨洋前线"
-    echo "  3. [US] 圣何塞 (San Jose)      - 硅谷核心"
-    echo "  4. [JP] 东京 (Tokyo)          - 亚太跳板"
-    echo "  5. [HK] 香港 (Hong Kong)      - 直连枢纽"
-    echo "  6. [SG] 新加坡 (Singapore)    - 东南亚出口"
-    echo "  7. [UK] 伦敦 (London)         - 欧洲节点"
-    echo "  8. [?] 自定义搜索 (手动输入城市拼音或英文)"
-    echo "  0. [X] 退出"
+    echo -e " ${YELLOW}--- 🇺🇸 美洲赛区 ---${RESET}"
+    echo "  1.  [US] 洛杉矶 (Los Angeles)    - 美西主力"
+    echo "  2.  [US] 西雅图 (Seattle)        - 跨洋前线"
+    echo "  3.  [US] 圣何塞 (San Jose)       - 硅谷核心"
+    echo "  4.  [US] 达拉斯 (Dallas)         - 美中枢纽"
+    echo "  5.  [US] 盐湖城 (Salt Lake City) - 西部腹地"
+    echo ""
+    echo -e " ${YELLOW}--- 🌏 亚太赛区 ---${RESET}"
+    echo "  6.  [HK] 香港 (Hong Kong)        - 直连枢纽"
+    echo "  7.  [JP] 东京 (Tokyo)            - 亚太跳板"
+    echo "  8.  [KR] 首尔 (Seoul)            - 韩国节点"
+    echo "  9.  [SG] 新加坡 (Singapore)      - 东南亚出口"
+    echo ""
+    echo -e " ${YELLOW}--- 🌍 欧澳赛区 ---${RESET}"
+    echo "  10. [DE] 法兰克福 (Frankfurt)    - 欧洲核心"
+    echo "  11. [UK] 伦敦 (London)           - 欧洲节点"
+    echo "  12. [AU] 悉尼 (Sydney)           - 澳洲枢纽"
+    echo ""
+    echo -e " ${YELLOW}--- 🌐 动态嗅探 ---${RESET}"
+    echo "  13. [?] 自定义搜索 (手动输入城市英文)"
+    echo "  0.  [X] 退出"
     echo -e "${CYAN}======================================${RESET}"
 
-    read -p "[>] 请输入您的选择 [0-8]: " choice
+    read -p "[>] 请输入您的选择 [0-13]: " choice
 
     case $choice in
         1) CITY="Los Angeles" ;;
         2) CITY="Seattle" ;;
         3) CITY="San Jose" ;;
-        4) CITY="Tokyo" ;;
-        5) CITY="Hong Kong" ;;
-        6) CITY="Singapore" ;;
-        7) CITY="London" ;;
-        8) 
+        4) CITY="Dallas" ;;
+        5) CITY="Salt Lake City" ;;
+        6) CITY="Hong Kong" ;;
+        7) CITY="Tokyo" ;;
+        8) CITY="Seoul" ;;
+        9) CITY="Singapore" ;;
+        10) CITY="Frankfurt" ;;
+        11) CITY="London" ;;
+        12) CITY="Sydney" ;;
+        13) 
            echo ""
-           read -p "[>] 请输入目标城市 (如 New York 或 Beijing): " custom_city
+           read -p "[>] 请输入目标城市 (如 New York 或 Paris): " custom_city
            CITY="$custom_city"
            ;;
         0) echo -e "${GREEN}[OK] 已退出雷达系统。祝您的探针永远全绿！${RESET}"; exit 0 ;;
@@ -89,7 +106,7 @@ while true; do
 
     echo -e "\n[*] 正在雷达扫描 ${GREEN}$CITY${RESET} 的可用节点，请稍候...\n"
 
-    # API 抓取与排版核心 (增加 Unicode 净化正则)
+    # API 抓取与排版核心 (带 Unicode 净化防乱码机制)
     curl -s "https://www.speedtest.net/api/js/servers?search=$(echo $CITY | sed 's/ /%20/g')" | \
     sed 's/},{/\n/g' | \
     sed 's/\\u[0-9a-fA-F]\{4\}//g' | \
